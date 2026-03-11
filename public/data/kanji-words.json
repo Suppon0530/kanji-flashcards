@@ -1,0 +1,152 @@
+[
+  {
+    "id": "k001",
+    "kanji": "山",
+    "reading": "やま",
+    "meaning": "Mountain",
+    "exampleSentence": "富士山は日本で一番高い山です。",
+    "exampleReading": "ふじさんはにほんでいちばんたかいやまです。",
+    "exampleMeaning": "Mt. Fuji is the tallest mountain in Japan.",
+    "grade": 1
+  },
+  {
+    "id": "k002",
+    "kanji": "川",
+    "reading": "かわ",
+    "meaning": "River",
+    "exampleSentence": "この川はとてもきれいです。",
+    "exampleReading": "このかわはとてもきれいです。",
+    "exampleMeaning": "This river is very clean.",
+    "grade": 1
+  },
+  {
+    "id": "k003",
+    "kanji": "花",
+    "reading": "はな",
+    "meaning": "Flower",
+    "exampleSentence": "春にはたくさんの花が咲きます。",
+    "exampleReading": "はるにはたくさんのはながさきます。",
+    "exampleMeaning": "Many flowers bloom in spring.",
+    "grade": 1
+  },
+  {
+    "id": "k004",
+    "kanji": "空",
+    "reading": "そら",
+    "meaning": "Sky",
+    "exampleSentence": "今日の空はとても青いです。",
+    "exampleReading": "きょうのそらはとてもあおいです。",
+    "exampleMeaning": "The sky is very blue today.",
+    "grade": 1
+  },
+  {
+    "id": "k005",
+    "kanji": "雨",
+    "reading": "あめ",
+    "meaning": "Rain",
+    "exampleSentence": "明日は雨が降るでしょう。",
+    "exampleReading": "あしたはあめがふるでしょう。",
+    "exampleMeaning": "It will probably rain tomorrow.",
+    "grade": 1
+  },
+  {
+    "id": "k006",
+    "kanji": "時間",
+    "reading": "じかん",
+    "meaning": "Time",
+    "exampleSentence": "時間がありません。",
+    "exampleReading": "じかんがありません。",
+    "exampleMeaning": "There is no time.",
+    "grade": 2
+  },
+  {
+    "id": "k007",
+    "kanji": "友達",
+    "reading": "ともだち",
+    "meaning": "Friend",
+    "exampleSentence": "友達と公園で遊びました。",
+    "exampleReading": "ともだちとこうえんであそびました。",
+    "exampleMeaning": "I played with my friend at the park.",
+    "grade": 2
+  },
+  {
+    "id": "k008",
+    "kanji": "天気",
+    "reading": "てんき",
+    "meaning": "Weather",
+    "exampleSentence": "今日はいい天気ですね。",
+    "exampleReading": "きょうはいいてんきですね。",
+    "exampleMeaning": "The weather is nice today, isn't it?",
+    "grade": 2
+  },
+  {
+    "id": "k009",
+    "kanji": "勉強",
+    "reading": "べんきょう",
+    "meaning": "Study",
+    "exampleSentence": "毎日日本語を勉強しています。",
+    "exampleReading": "まいにちにほんごをべんきょうしています。",
+    "exampleMeaning": "I study Japanese every day.",
+    "grade": 3
+  },
+  {
+    "id": "k010",
+    "kanji": "漢字",
+    "reading": "かんじ",
+    "meaning": "Chinese characters / Kanji",
+    "exampleSentence": "漢字を覚えるのは大変です。",
+    "exampleReading": "かんじをおぼえるのはたいへんです。",
+    "exampleMeaning": "Memorizing kanji is tough.",
+    "grade": 3
+  },
+  {
+    "id": "k011",
+    "kanji": "世界",
+    "reading": "せかい",
+    "meaning": "World",
+    "exampleSentence": "世界中を旅行したいです。",
+    "exampleReading": "せかいじゅうをりょこうしたいです。",
+    "exampleMeaning": "I want to travel around the world.",
+    "grade": 3
+  },
+  {
+    "id": "k012",
+    "kanji": "経験",
+    "reading": "けいけん",
+    "meaning": "Experience",
+    "exampleSentence": "いい経験になりました。",
+    "exampleReading": "いいけいけんになりました。",
+    "exampleMeaning": "It was a good experience.",
+    "grade": 4
+  },
+  {
+    "id": "k013",
+    "kanji": "挑戦",
+    "reading": "ちょうせん",
+    "meaning": "Challenge",
+    "exampleSentence": "新しいことに挑戦するのが好きです。",
+    "exampleReading": "あたらしいことにちょうせんするのがすきです。",
+    "exampleMeaning": "I like to challenge myself with new things.",
+    "grade": 4
+  },
+  {
+    "id": "k014",
+    "kanji": "環境",
+    "reading": "かんきょう",
+    "meaning": "Environment",
+    "exampleSentence": "環境を守ることは大切です。",
+    "exampleReading": "かんきょうをまもることはたいせつです。",
+    "exampleMeaning": "Protecting the environment is important.",
+    "grade": 5
+  },
+  {
+    "id": "k015",
+    "kanji": "想像",
+    "reading": "そうぞう",
+    "meaning": "Imagination",
+    "exampleSentence": "想像以上に難しかったです。",
+    "exampleReading": "そうぞういじょうにむずかしかったです。",
+    "exampleMeaning": "It was harder than I imagined.",
+    "grade": 5
+  }
+]
