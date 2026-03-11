@@ -1,12 +1,8 @@
-import fs from "node:fs";
-import path from "node:path";
-import { kanjiWordsSchema } from "@/types/kanji";
+import { getAllKanjiWords } from "@/server/db/kanji-queries";
 import { FlashcardContainer } from "@/components/FlashcardContainer";
 
-export default function Home() {
-  const filePath = path.join(process.cwd(), "public/data/kanji-words.json");
-  const raw = fs.readFileSync(filePath, "utf-8");
-  const words = kanjiWordsSchema.parse(JSON.parse(raw));
+export default async function Home() {
+  const words = await getAllKanjiWords();
 
   return (
     <div className="flex min-h-dvh items-center justify-center px-4 py-8">
