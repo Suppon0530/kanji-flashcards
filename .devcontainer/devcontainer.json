@@ -1,0 +1,22 @@
+{
+  "name": "kanji flashcards",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/home/node/kanji-flashcards",
+  "remoteUser": "node",
+  "postCreateCommand": "pnpm install",
+  "forwardPorts": [3000],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "formulahendry.auto-close-tag",
+        "bradlc.vscode-tailwindcss",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "PKief.material-icon-theme",
+        "xabikos.ReactSnippets",
+        "xabikos.JavaScriptSnippets"
+      ]
+    }
+  }
+}

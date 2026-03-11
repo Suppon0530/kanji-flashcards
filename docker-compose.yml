@@ -1,0 +1,15 @@
+services:
+  app:
+    build: .
+    user: node
+    volumes:
+      - .:/home/node/kanji-flashcards
+      - node_modules:/home/node/kanji-flashcards/node_modules
+      - next_cache:/home/node/kanji-flashcards/.next
+    environment:
+      - WATCHPACK_POLLING=true
+    tty: true
+
+volumes:
+  node_modules:
+  next_cache:
