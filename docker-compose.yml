@@ -8,8 +8,28 @@ services:
       - next_cache:/home/node/kanji-flashcards/.next
     environment:
       - WATCHPACK_POLLING=true
+      - DATABASE_URL=postgresql://kanji_user:kanji_pass@db:5432/kanji_db
     tty: true
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: kanji_user
+      POSTGRES_PASSWORD: kanji_pass
+      POSTGRES_DB: kanji_db
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kanji_user -d kanji_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 volumes:
   node_modules:
   next_cache:
+  pgdata:

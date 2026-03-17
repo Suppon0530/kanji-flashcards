@@ -5,7 +5,7 @@
   "workspaceFolder": "/home/node/kanji-flashcards",
   "remoteUser": "node",
   "postCreateCommand": "pnpm install",
-  "forwardPorts": [3000],
+  "forwardPorts": [3000, 5432],
   "customizations": {
     "vscode": {
       "extensions": [
