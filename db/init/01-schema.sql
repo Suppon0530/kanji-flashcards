@@ -17,7 +17,8 @@ CREATE TABLE kanji_words (
   example_sentence TEXT         NOT NULL,
   example_reading  TEXT         NOT NULL,
   example_meaning  TEXT         NOT NULL,
-  grade            INTEGER      NOT NULL CHECK (grade >= 1 AND grade <= 10)
+  grade            INTEGER      NOT NULL CHECK (grade >= 1 AND grade <= 10),
+  created_at       TIMESTAMPTZ  NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- 問題-漢字 中間テーブル
