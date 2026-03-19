@@ -28,6 +28,16 @@ export const kanjiWordsSchema = z.array(kanjiWordSchema);
 
 export type KanjiWord = z.infer<typeof kanjiWordSchema>;
 
+export const wordUpdateEntrySchema = z.object({
+  updateDate: z.string(),
+  grades: z.array(z.int()),
+  wordCount: z.int(),
+});
+
+export const wordUpdateHistorySchema = z.array(wordUpdateEntrySchema);
+
+export type WordUpdateEntry = z.infer<typeof wordUpdateEntrySchema>;
+
 export type StudyAnswer = {
   wordId: string;
   correct: boolean;

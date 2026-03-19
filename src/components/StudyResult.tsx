@@ -5,9 +5,10 @@ type StudyResultProps = {
   questions: KanjiWord[];
   answers: StudyAnswer[];
   onRestart: () => void;
+  onClose?: () => void;
 };
 
-export function StudyResult({ questions, answers, onRestart }: StudyResultProps) {
+export function StudyResult({ questions, answers, onRestart, onClose }: StudyResultProps) {
   const { correct, total, percentage } = calculateScore(answers);
 
   return (
@@ -52,12 +53,22 @@ export function StudyResult({ questions, answers, onRestart }: StudyResultProps)
         })}
       </div>
 
-      <button
-        onClick={onRestart}
-        className="cursor-pointer rounded-xl bg-teal-600 px-8 py-4 text-lg font-semibold text-white transition-colors hover:bg-teal-700"
-      >
-        もう一度
-      </button>
+      <div className="flex gap-4">
+        <button
+          onClick={onRestart}
+          className="cursor-pointer rounded-xl bg-teal-600 px-8 py-4 text-lg font-semibold text-white transition-colors hover:bg-teal-700"
+        >
+          もう一度
+        </button>
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="cursor-pointer rounded-xl border border-zinc-300 px-8 py-4 text-lg font-semibold text-zinc-600 transition-colors hover:bg-zinc-100 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-800"
+          >
+            閉じる
+          </button>
+        )}
+      </div>
     </div>
   );
 }

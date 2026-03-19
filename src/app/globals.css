@@ -31,3 +31,40 @@
 .card-back {
   transform: rotateY(180deg);
 }
+
+/* Modal animations */
+.modal-fade-in {
+  animation: modal-fade-in 0.2s ease-out forwards;
+}
+
+.modal-fade-out {
+  animation: modal-fade-out 0.2s ease-in forwards;
+}
+
+.modal-slide-up {
+  animation: modal-slide-up 0.2s ease-out forwards;
+}
+
+.modal-slide-down {
+  animation: modal-slide-down 0.2s ease-in forwards;
+}
+
+@keyframes modal-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modal-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes modal-slide-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes modal-slide-down {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(16px); }
+}

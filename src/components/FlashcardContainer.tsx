@@ -11,9 +11,10 @@ const QUESTION_COUNT = 5;
 
 type FlashcardContainerProps = {
   words: KanjiWord[];
+  onClose?: () => void;
 };
 
-export function FlashcardContainer({ words }: FlashcardContainerProps) {
+export function FlashcardContainer({ words, onClose }: FlashcardContainerProps) {
   const [state, setState] = useState<StudyState>({ phase: "start" });
 
   const handleStart = () => {
@@ -53,6 +54,7 @@ export function FlashcardContainer({ words }: FlashcardContainerProps) {
           questions={state.questions}
           answers={state.answers}
           onRestart={handleStart}
+          onClose={onClose}
         />
       );
   }
