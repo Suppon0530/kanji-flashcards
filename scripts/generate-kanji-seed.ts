@@ -4,20 +4,46 @@ import { join } from "path";
 type KanjiEntry = {
   character: string;
   grade: number;
-  stroke_count: number;
-  onyomi: string | null;
-  kunyomi: string | null;
-  meaning: string;
+  kanjipediaUrl: string;
 };
 
-const inputPath = join(__dirname, "data", "jouyou-kanji.json");
+const GRADE_MAP: Record<string, number> = {
+  "10級": 1,
+  "9級": 2,
+  "8級": 3,
+  "7級": 4,
+  "6級": 5,
+  "5級": 6,
+  "4級": 7,
+  "3級": 7,
+  "準2級": 8,
+  "2級": 8,
+  "準1級": 9,
+  "1級": 10,
+};
+
+const inputPath = join(__dirname, "data", "kanji.csv");
 const outputPath = join(__dirname, "..", "db", "init", "02-seed-kanji.sql");
 
-const kanji: KanjiEntry[] = JSON.parse(readFileSync(inputPath, "utf-8"));
+const csv = readFileSync(inputPath, "utf-8");
+const lines = csv.trim().split("\n").slice(1); // skip header
 
-if (kanji.length !== 2136) {
-  console.error(`ERROR: Expected 2136 kanji, got ${kanji.length}. Run build-kanji-data.ts first.`);
-  process.exit(1);
+const entries: KanjiEntry[] = [];
+
+for (const line of lines) {
+  const cols = line.split(",");
+  const character = cols[3];
+  const variant = cols[5];
+  const level = cols[6];
+  const url = cols[7];
+
+  // 親字のみ、漢字テキストあり
+  if (variant !== "親字" || !character) continue;
+
+  const grade = GRADE_MAP[level];
+  if (grade === undefined) continue;
+
+  entries.push({ character, grade, kanjipediaUrl: url });
 }
 
 function escapeSQL(value: string): string {
@@ -25,15 +51,14 @@ function escapeSQL(value: string): string {
 }
 
 function toSQL(entry: KanjiEntry): string {
-  const onyomi = entry.onyomi ? `'${escapeSQL(entry.onyomi)}'` : "NULL";
-  const kunyomi = entry.kunyomi ? `'${escapeSQL(entry.kunyomi)}'` : "NULL";
-  return `  ('${entry.character}', ${entry.grade}, ${entry.stroke_count}, ${onyomi}, ${kunyomi}, '${escapeSQL(entry.meaning)}')`;
+  const url = entry.kanjipediaUrl
+    ? `'${escapeSQL(entry.kanjipediaUrl)}'`
+    : "NULL";
+  return `  ('${entry.character}', ${entry.grade}, ${url})`;
 }
 
-const lines = kanji.map(toSQL);
-
-const sql = `INSERT INTO kanji (character, grade, stroke_count, onyomi, kunyomi, meaning) VALUES\n${lines.join(",\n")};\n`;
+const sql = `INSERT INTO kanji (character, grade, kanjipedia_url) VALUES\n${entries.map(toSQL).join(",\n")};\n`;
 
 writeFileSync(outputPath, sql, "utf-8");
 
-console.log(`Generated ${kanji.length} kanji entries → ${outputPath}`);
+console.log(`Generated ${entries.length} kanji entries → ${outputPath}`);

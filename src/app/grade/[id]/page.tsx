@@ -49,12 +49,9 @@ export default async function GradePage({
                 className="flex items-center gap-3 rounded-xl border border-zinc-200 p-4 dark:border-zinc-700"
               >
                 <span className="inline-block w-14 text-left text-2xl font-bold">
-                  {word.kanji}
+                  {word.question}
                 </span>
-                <div className="flex flex-col">
-                  <span className="text-sm font-medium">{word.reading}</span>
-                  <span className="text-xs text-zinc-500">{word.meaning}</span>
-                </div>
+                <span className="text-sm font-medium">{word.reading}</span>
               </div>
             ))
           ) : (

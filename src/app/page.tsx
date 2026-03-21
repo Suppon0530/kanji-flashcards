@@ -1,11 +1,8 @@
-import { getAllKanjiWords, getWordUpdateHistory } from "@/server/db/kanji-queries";
+import { getAllKanjiWords } from "@/server/db/kanji-queries";
 import { TopPage } from "@/components/TopPage";
 
 export default async function Home() {
-  const [words, history] = await Promise.all([
-    getAllKanjiWords(),
-    getWordUpdateHistory(),
-  ]);
+  const words = await getAllKanjiWords();
 
-  return <TopPage words={words} history={history} />;
+  return <TopPage words={words} />;
 }

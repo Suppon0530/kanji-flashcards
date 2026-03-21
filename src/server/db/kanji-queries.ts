@@ -1,16 +1,12 @@
-import { kanjiArraySchema, kanjiWordsSchema, wordUpdateHistorySchema } from "@/types/kanji";
+import { kanjiArraySchema, kanjiWordsSchema } from "@/types/kanji";
 import { pool } from "./client";
 
 export async function getAllKanjiWords() {
   const { rows } = await pool.query(`
     SELECT
       id,
-      kanji,
+      question,
       reading,
-      meaning,
-      example_sentence AS "exampleSentence",
-      example_reading  AS "exampleReading",
-      example_meaning  AS "exampleMeaning",
       grade
     FROM kanji_words
     ORDER BY id
@@ -22,12 +18,10 @@ export async function getAllKanjiWords() {
 export async function getAllKanji() {
   const { rows } = await pool.query(`
     SELECT
+      id,
       character,
       grade,
-      stroke_count AS "strokeCount",
-      onyomi,
-      kunyomi,
-      meaning
+      kanjipedia_url AS "kanjipediaUrl"
     FROM kanji
     ORDER BY grade, character
   `);
@@ -41,12 +35,8 @@ export async function getKanjiWordsByGrade(grade: number) {
     `
     SELECT
       id,
-      kanji,
+      question,
       reading,
-      meaning,
-      example_sentence AS "exampleSentence",
-      example_reading  AS "exampleReading",
-      example_meaning  AS "exampleMeaning",
       grade
     FROM kanji_words
     WHERE ${condition}
@@ -58,30 +48,14 @@ export async function getKanjiWordsByGrade(grade: number) {
   return kanjiWordsSchema.parse(rows);
 }
 
-export async function getWordUpdateHistory() {
-  const { rows } = await pool.query(`
-    SELECT
-      TO_CHAR(created_at AT TIME ZONE 'Asia/Tokyo', 'YYYY-MM-DD') AS "updateDate",
-      ARRAY_AGG(DISTINCT grade ORDER BY grade) AS grades,
-      COUNT(*)::int AS "wordCount"
-    FROM kanji_words
-    GROUP BY "updateDate"
-    ORDER BY "updateDate" DESC
-  `);
-
-  return wordUpdateHistorySchema.parse(rows);
-}
-
 export async function getKanjiByGrade(grade: number) {
   const { rows } = await pool.query(
     `
     SELECT
+      id,
       character,
       grade,
-      stroke_count AS "strokeCount",
-      onyomi,
-      kunyomi,
-      meaning
+      kanjipedia_url AS "kanjipediaUrl"
     FROM kanji
     WHERE grade = $1
     ORDER BY character
