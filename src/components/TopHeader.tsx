@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { HamburgerMenu } from "@/components/HamburgerMenu";
 
 export function TopHeader() {
@@ -8,10 +9,15 @@ export function TopHeader() {
 
   return (
     <header className="border-b border-zinc-200 dark:border-zinc-700">
-      <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-teal-600 text-lg font-bold text-white">
-          漢
-        </div>
+      <div className="mx-auto flex h-12 max-w-2xl items-center justify-between px-4">
+        <Image
+          src="/Suppon_Logo_1024.png"
+          alt="ロゴ"
+          width={1024}
+          height={1024}
+          className="h-full w-auto"
+          unoptimized
+        />
 
         <button
           onClick={() => setIsMenuOpen(true)}

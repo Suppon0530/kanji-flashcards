@@ -6,7 +6,7 @@ type StudyStartProps = {
 export function StudyStart({ totalWords, onStart }: StudyStartProps) {
   return (
     <div className="flex flex-col items-center gap-8 text-center">
-      <h1 className="text-3xl font-bold">漢字フラッシュカード</h1>
+      <h1 className="text-3xl font-bold">ずぼ漢</h1>
       <p className="text-lg text-zinc-500">
         {totalWords}語の中からランダムに5問出題します。
         <br />
@@ -14,9 +14,9 @@ export function StudyStart({ totalWords, onStart }: StudyStartProps) {
       </p>
       <button
         onClick={onStart}
-        className="cursor-pointer rounded-xl bg-teal-600 px-8 py-4 text-lg font-semibold text-white transition-colors hover:bg-teal-700"
+        className="cursor-pointer rounded-xl bg-primary px-8 py-4 text-lg font-semibold text-white transition-colors hover:bg-primary-hover"
       >
-        学習を始める
+        問題に挑戦
       </button>
     </div>
   );

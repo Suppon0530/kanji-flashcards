@@ -41,9 +41,9 @@ export function StudyModal({ words }: StudyModalProps) {
     <>
       <button
         onClick={handleOpen}
-        className="cursor-pointer rounded-xl bg-teal-600 px-6 py-2 text-sm font-semibold text-white transition-colors hover:bg-teal-700"
+        className="cursor-pointer rounded-xl bg-primary px-6 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
       >
-        学習を始める
+        問題に挑戦
       </button>
 
       {isModalOpen && (

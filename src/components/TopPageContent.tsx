@@ -43,10 +43,10 @@ export function TopPageContent({ words }: TopPageContentProps) {
   return (
     <div className="space-y-8">
       <div className="text-center">
-        <h1 className="text-4xl font-bold">漢字フラッシュカード</h1>
+        <h1 className="text-4xl font-bold">ずぼ漢</h1>
         <p className="mt-4 text-lg text-zinc-500">
           対象単語数:{" "}
-          <span className="font-semibold text-teal-600">
+          <span className="font-semibold text-primary">
             {filteredWords.length}
           </span>
           語
@@ -55,11 +55,12 @@ export function TopPageContent({ words }: TopPageContentProps) {
         </p>
       </div>
 
-      <div className="flex justify-center">
-        {filteredWords.length > 0 ? (
+      <div className="relative flex justify-center">
+        <div className={filteredWords.length > 0 ? "visible" : "invisible"}>
           <StudyModal words={filteredWords} />
-        ) : (
-          <p className="text-sm text-zinc-400">
+        </div>
+        {filteredWords.length === 0 && (
+          <p className="absolute inset-0 flex items-center justify-center text-sm text-zinc-400">
             出題範囲を選択してください
           </p>
         )}

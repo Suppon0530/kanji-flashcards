@@ -2,6 +2,10 @@
 
 @theme inline {
   --font-sans: var(--font-noto-sans-jp);
+  --color-primary: #36B385;
+  --color-primary-hover: #2E9A73;
+  --color-incorrect: #B36236;
+  --color-incorrect-hover: #9A5430;
 }
 
 /* Card flip animation */
@@ -67,6 +71,35 @@
 @keyframes modal-slide-down {
   from { opacity: 1; transform: translateY(0); }
   to { opacity: 0; transform: translateY(16px); }
+}
+
+/* Grade checkbox */
+.grade-checkbox {
+  appearance: none;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid #d4d4d8;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.grade-checkbox:checked {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.grade-checkbox:checked::after {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 0px;
+  width: 5px;
+  height: 9px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
 }
 
 /* Drawer animations */

@@ -9,7 +9,7 @@ const notoSansJP = Noto_Sans_JP({
 });
 
 export const metadata: Metadata = {
-  title: "漢字フラッシュカード",
+  title: "ずぼ漢",
   description: "漢字の読みと意味を学ぶフラッシュカードアプリ",
 };
 

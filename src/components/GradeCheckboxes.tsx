@@ -34,7 +34,7 @@ export function GradeCheckboxes({
             type="button"
             onClick={onSelectAll}
             disabled={allSelected}
-            className="cursor-pointer text-xs text-teal-600 transition-colors hover:text-teal-700 disabled:cursor-default disabled:text-zinc-300 dark:disabled:text-zinc-600"
+            className="cursor-pointer text-xs text-primary transition-colors hover:text-primary-hover disabled:cursor-default disabled:text-zinc-300 dark:disabled:text-zinc-600"
           >
             全て選択
           </button>
@@ -43,7 +43,7 @@ export function GradeCheckboxes({
             type="button"
             onClick={onClearAll}
             disabled={noneSelected}
-            className="cursor-pointer text-xs text-teal-600 transition-colors hover:text-teal-700 disabled:cursor-default disabled:text-zinc-300 dark:disabled:text-zinc-600"
+            className="cursor-pointer text-xs text-primary transition-colors hover:text-primary-hover disabled:cursor-default disabled:text-zinc-300 dark:disabled:text-zinc-600"
           >
             全て解除
           </button>
@@ -59,10 +59,10 @@ export function GradeCheckboxes({
               type="checkbox"
               checked={selectedGrades.has(option.grade)}
               onChange={() => onToggle(option.grade)}
-              className="accent-teal-600"
+              className="grade-checkbox"
             />
             <span className="text-sm font-medium">{option.label}</span>
-            <span className="text-xs text-zinc-400">
+            <span className="ml-auto text-xs text-zinc-400">
               {wordCountByGrade[option.grade] ?? 0}語
             </span>
           </label>
