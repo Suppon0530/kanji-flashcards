@@ -68,3 +68,22 @@
   from { opacity: 1; transform: translateY(0); }
   to { opacity: 0; transform: translateY(16px); }
 }
+
+/* Drawer animations */
+.drawer-slide-in {
+  animation: drawer-slide-in 0.2s ease-out forwards;
+}
+
+.drawer-slide-out {
+  animation: drawer-slide-out 0.2s ease-in forwards;
+}
+
+@keyframes drawer-slide-in {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes drawer-slide-out {
+  from { transform: translateX(0); }
+  to { transform: translateX(100%); }
+}
