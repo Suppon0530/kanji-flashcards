@@ -12,8 +12,15 @@ type KanjiIdEntry = {
   grade: number;
 };
 
+function extractKanji(str: string): string[] {
+  return [...str].filter((c) => {
+    const cp = c.codePointAt(0)!;
+    return (cp >= 0x4e00 && cp <= 0x9fff) || (cp >= 0x3400 && cp <= 0x4dbf);
+  });
+}
+
 const dataDir = join(__dirname, "data");
-const wordsPath = join(dataDir, "kanji-words.json");
+const wordsPath = join(dataDir, "kanji-words.csv");
 const kanjiSeedPath = join(__dirname, "..", "db", "init", "02-seed-kanji.sql");
 const wordsSqlPath = join(__dirname, "..", "db", "init", "03-seed-words.sql");
 
@@ -42,7 +49,15 @@ const kanjiSeedSql = readFileSync(kanjiSeedPath, "utf-8");
 const kanjiIdMap = buildKanjiIdMap(kanjiSeedSql);
 console.log(`Loaded ${kanjiIdMap.size} kanji from seed SQL`);
 
-const words: KanjiWord[] = JSON.parse(readFileSync(wordsPath, "utf-8"));
+const csvContent = readFileSync(wordsPath, "utf-8");
+const words: KanjiWord[] = csvContent
+  .trim()
+  .split("\n")
+  .slice(1)
+  .map((line) => {
+    const [question, reading] = line.split(",");
+    return { question, reading, kanjiChars: extractKanji(question) };
+  });
 
 function escapeSQL(value: string): string {
   return value.replace(/'/g, "''");

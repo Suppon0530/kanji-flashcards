@@ -13,7 +13,7 @@ export default async function GradePage({
   const { id } = await params;
   const grade = Number(id);
 
-  if (!Number.isInteger(grade) || grade < 1 || grade > 8) {
+  if (!Number.isInteger(grade) || grade < 1 || grade > 10) {
     notFound();
   }
 

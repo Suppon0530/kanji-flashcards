@@ -30,7 +30,7 @@ export async function getAllKanji() {
 }
 
 export async function getKanjiWordsByGrade(grade: number) {
-  const condition = grade >= 8 ? "grade >= $1" : "grade = $1";
+  const condition = "grade = $1";
   const { rows } = await pool.query(
     `
     SELECT
