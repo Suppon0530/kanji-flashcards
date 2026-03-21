@@ -1,20 +1,54 @@
+import { GradeCheckboxes } from "@/components/GradeCheckboxes";
+
 type StudyStartProps = {
   totalWords: number;
+  showGradeSelection?: boolean;
+  selectedGrades: Set<number>;
+  wordCountByGrade: Record<number, number>;
+  onToggle: (grade: number) => void;
+  onSelectAll: () => void;
+  onClearAll: () => void;
   onStart: () => void;
 };
 
-export function StudyStart({ totalWords, onStart }: StudyStartProps) {
+export function StudyStart({
+  totalWords,
+  showGradeSelection = false,
+  selectedGrades,
+  wordCountByGrade,
+  onToggle,
+  onSelectAll,
+  onClearAll,
+  onStart,
+}: StudyStartProps) {
   return (
-    <div className="flex flex-col items-center gap-8 text-center">
-      <h1 className="text-3xl font-bold">ずぼ漢</h1>
+    <div className="flex flex-col items-center gap-6 text-center">
+      {!showGradeSelection && (
+        <h1 className="text-3xl font-bold">ずぼ漢</h1>
+      )}
       <p className="text-lg text-zinc-500">
-        {totalWords}語の中からランダムに5問出題します。
+        対象単語数:{" "}
+        <span className="font-semibold text-primary">{totalWords}</span>語
         <br />
-        カードをめくって、読みと意味を確認しましょう。
+        ランダムに5問出題します。
       </p>
+
+      {showGradeSelection && (
+        <div className="w-full text-left">
+          <GradeCheckboxes
+            selectedGrades={selectedGrades}
+            wordCountByGrade={wordCountByGrade}
+            onToggle={onToggle}
+            onSelectAll={onSelectAll}
+            onClearAll={onClearAll}
+          />
+        </div>
+      )}
+
       <button
         onClick={onStart}
-        className="cursor-pointer rounded-xl bg-primary px-8 py-4 text-lg font-semibold text-white transition-colors hover:bg-primary-hover"
+        disabled={totalWords === 0}
+        className="cursor-pointer rounded-xl bg-primary px-8 py-4 text-lg font-semibold text-white transition-colors hover:bg-primary-hover disabled:cursor-default disabled:opacity-50"
       >
         問題に挑戦
       </button>

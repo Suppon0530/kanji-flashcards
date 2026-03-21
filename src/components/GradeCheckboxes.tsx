@@ -49,7 +49,7 @@ export function GradeCheckboxes({
           </button>
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+      <div className="grid grid-cols-2 gap-3">
         {GRADE_OPTIONS.map((option) => (
           <label
             key={option.grade}

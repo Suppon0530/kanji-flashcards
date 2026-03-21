@@ -6,15 +6,18 @@ import { FlashcardContainer } from "@/components/FlashcardContainer";
 
 type StudyModalProps = {
   words: KanjiWord[];
+  autoOpen?: boolean;
 };
 
-export function StudyModal({ words }: StudyModalProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+export function StudyModal({ words, autoOpen = false }: StudyModalProps) {
+  const [isModalOpen, setIsModalOpen] = useState(autoOpen);
   const [isClosing, setIsClosing] = useState(false);
   const [modalKey, setModalKey] = useState(0);
+  const [showGradeSelection, setShowGradeSelection] = useState(autoOpen);
 
   const handleOpen = () => {
     setModalKey((prev) => prev + 1);
+    setShowGradeSelection(false);
     setIsModalOpen(true);
   };
 
@@ -36,6 +39,16 @@ export function StudyModal({ words }: StudyModalProps) {
       document.body.style.overflow = "";
     };
   }, [isModalOpen]);
+
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
 
   return (
     <>
@@ -65,6 +78,7 @@ export function StudyModal({ words }: StudyModalProps) {
               <FlashcardContainer
                 key={modalKey}
                 words={words}
+                showGradeSelection={showGradeSelection}
                 onClose={handleClose}
               />
             </div>

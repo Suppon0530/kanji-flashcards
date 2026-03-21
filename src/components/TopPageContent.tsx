@@ -57,7 +57,7 @@ export function TopPageContent({ words }: TopPageContentProps) {
 
       <div className="relative flex justify-center">
         <div className={filteredWords.length > 0 ? "visible" : "invisible"}>
-          <StudyModal words={filteredWords} />
+          <StudyModal words={filteredWords} autoOpen />
         </div>
         {filteredWords.length === 0 && (
           <p className="absolute inset-0 flex items-center justify-center text-sm text-zinc-400">
