@@ -6,15 +6,18 @@ import { FlashcardContainer } from "@/components/FlashcardContainer";
 
 type StudyModalProps = {
   words: KanjiWord[];
+  autoOpen?: boolean;
 };
 
-export function StudyModal({ words }: StudyModalProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+export function StudyModal({ words, autoOpen = false }: StudyModalProps) {
+  const [isModalOpen, setIsModalOpen] = useState(autoOpen);
   const [isClosing, setIsClosing] = useState(false);
   const [modalKey, setModalKey] = useState(0);
+  const [showGradeSelection, setShowGradeSelection] = useState(autoOpen);
 
   const handleOpen = () => {
     setModalKey((prev) => prev + 1);
+    setShowGradeSelection(false);
     setIsModalOpen(true);
   };
 
@@ -37,13 +40,23 @@ export function StudyModal({ words }: StudyModalProps) {
     };
   }, [isModalOpen]);
 
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+
   return (
     <>
       <button
         onClick={handleOpen}
-        className="cursor-pointer rounded-xl bg-teal-600 px-6 py-2 text-sm font-semibold text-white transition-colors hover:bg-teal-700"
+        className="cursor-pointer rounded-xl bg-primary px-6 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
       >
-        学習を始める
+        問題に挑戦
       </button>
 
       {isModalOpen && (
@@ -65,6 +78,7 @@ export function StudyModal({ words }: StudyModalProps) {
               <FlashcardContainer
                 key={modalKey}
                 words={words}
+                showGradeSelection={showGradeSelection}
                 onClose={handleClose}
               />
             </div>

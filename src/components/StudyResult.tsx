@@ -16,9 +16,9 @@ export function StudyResult({ questions, answers, onRestart, onClose }: StudyRes
       <h2 className="text-2xl font-bold">結果</h2>
 
       <div className="flex flex-col items-center gap-1">
-        <span className="text-5xl font-bold text-teal-600">{percentage}%</span>
+        <span className="text-5xl font-bold text-primary">{percentage}%</span>
         <span className="text-zinc-500">
-          {total}問中{correct}問正解
+          {total}問中{correct}問覚えた
         </span>
       </div>
 
@@ -30,20 +30,20 @@ export function StudyResult({ questions, answers, onRestart, onClose }: StudyRes
               key={word.id}
               className={`flex items-center justify-between rounded-xl border p-4 ${
                 isCorrect
-                  ? "border-green-600/30 bg-green-100 dark:bg-green-900"
-                  : "border-amber-600/30 bg-amber-100 dark:bg-amber-900"
+                  ? "border-primary/30 bg-primary/10"
+                  : "border-incorrect/30 bg-incorrect/10"
               }`}
             >
-              <div className="flex items-center gap-3">
-                <span className="inline-block w-14 text-left text-2xl font-bold">
+              <div className="flex flex-col">
+                <span className="whitespace-nowrap text-2xl font-bold">
                   {word.question}
                 </span>
-                <span className="text-sm font-medium">{word.reading}</span>
+                <span className="whitespace-nowrap text-sm font-medium text-zinc-500">{word.reading}</span>
               </div>
               <span
-                className={`text-sm font-semibold ${isCorrect ? "text-green-600" : "text-amber-600"}`}
+                className={`text-sm font-semibold ${isCorrect ? "text-primary" : "text-incorrect"}`}
               >
-                {isCorrect ? "正解" : "不正解"}
+                {isCorrect ? "覚えた" : "覚えてない"}
               </span>
             </div>
           );
@@ -53,7 +53,7 @@ export function StudyResult({ questions, answers, onRestart, onClose }: StudyRes
       <div className="flex gap-4">
         <button
           onClick={onRestart}
-          className="cursor-pointer rounded-xl bg-teal-600 px-8 py-4 text-lg font-semibold text-white transition-colors hover:bg-teal-700"
+          className="cursor-pointer rounded-xl bg-primary px-8 py-4 text-lg font-semibold text-white transition-colors hover:bg-primary-hover"
         >
           もう一度
         </button>

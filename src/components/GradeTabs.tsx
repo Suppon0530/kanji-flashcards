@@ -18,7 +18,7 @@ export function GradeTabs({ currentGrade }: GradeTabsProps) {
           href={`/grade/${option.grade}`}
           className={`rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${
             currentGrade === option.grade
-              ? "bg-teal-600 text-white"
+              ? "bg-primary text-white"
               : "border border-zinc-300 text-zinc-600 hover:bg-zinc-100 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-800"
           }`}
         >
