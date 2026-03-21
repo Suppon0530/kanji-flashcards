@@ -1,12 +1,10 @@
 import { z } from "zod/v4";
 
 export const kanjiSchema = z.object({
+  id: z.number().int().positive(),
   character: z.string().length(1),
-  grade: z.int().min(1).max(7),
-  strokeCount: z.int().min(1),
-  onyomi: z.string().nullable(),
-  kunyomi: z.string().nullable(),
-  meaning: z.string(),
+  grade: z.int().min(1).max(10),
+  kanjipediaUrl: z.string().nullable(),
 });
 
 export const kanjiArraySchema = z.array(kanjiSchema);
@@ -14,13 +12,9 @@ export const kanjiArraySchema = z.array(kanjiSchema);
 export type Kanji = z.infer<typeof kanjiSchema>;
 
 export const kanjiWordSchema = z.object({
-  id: z.string(),
-  kanji: z.string(),
+  id: z.number().int().positive(),
+  question: z.string(),
   reading: z.string(),
-  meaning: z.string(),
-  exampleSentence: z.string(),
-  exampleReading: z.string(),
-  exampleMeaning: z.string(),
   grade: z.int().min(1).max(10),
 });
 
@@ -28,18 +22,8 @@ export const kanjiWordsSchema = z.array(kanjiWordSchema);
 
 export type KanjiWord = z.infer<typeof kanjiWordSchema>;
 
-export const wordUpdateEntrySchema = z.object({
-  updateDate: z.string(),
-  grades: z.array(z.int()),
-  wordCount: z.int(),
-});
-
-export const wordUpdateHistorySchema = z.array(wordUpdateEntrySchema);
-
-export type WordUpdateEntry = z.infer<typeof wordUpdateEntrySchema>;
-
 export type StudyAnswer = {
-  wordId: string;
+  wordId: number;
   correct: boolean;
 };
 

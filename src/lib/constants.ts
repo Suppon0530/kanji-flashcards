@@ -7,6 +7,6 @@ export const GRADE_LABELS: Record<number, string> = {
   6: "小学6年",
   7: "中学生",
   8: "高校生",
-  9: "高校生",
-  10: "高校生",
+  9: "漢検準1級",
+  10: "漢検1級",
 };

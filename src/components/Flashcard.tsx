@@ -38,7 +38,7 @@ export function Flashcard({ word, currentIndex, totalCount, onAnswer }: Flashcar
           {/* Front */}
           <div className="card-face flex items-center justify-center rounded-2xl border border-gray-200 bg-white shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
             <div className="flex flex-col items-center gap-4">
-              <span className="text-7xl font-bold sm:text-8xl">{word.kanji}</span>
+              <span className="text-7xl font-bold sm:text-8xl">{word.question}</span>
               <span className="text-sm text-zinc-400">タップしてめくる</span>
             </div>
           </div>
@@ -46,16 +46,8 @@ export function Flashcard({ word, currentIndex, totalCount, onAnswer }: Flashcar
           {/* Back */}
           <div className="card-face card-back flex items-center justify-center rounded-2xl border border-gray-200 bg-white p-6 shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
             <div className="flex flex-col items-center gap-3 text-center">
-              <span className="text-4xl font-bold">{word.kanji}</span>
+              <span className="text-4xl font-bold">{word.question}</span>
               <span className="text-2xl text-teal-600">{word.reading}</span>
-              <span className="text-lg text-zinc-500">{word.meaning}</span>
-              {word.exampleSentence && (
-                <div className="mt-2 rounded-lg bg-zinc-50 p-3 text-sm dark:bg-zinc-800">
-                  <p className="font-medium">{word.exampleSentence}</p>
-                  <p className="text-zinc-400">{word.exampleReading}</p>
-                  <p className="mt-1 text-zinc-500">{word.exampleMeaning}</p>
-                </div>
-              )}
             </div>
           </div>
         </div>
