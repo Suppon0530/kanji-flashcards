@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme inline {
-  --font-sans: var(--font-noto-sans-jp);
+  --font-sans: "Noto Sans JP Variable", sans-serif;
   --color-primary: #36B385;
   --color-primary-hover: #2E9A73;
   --color-incorrect: #B36236;

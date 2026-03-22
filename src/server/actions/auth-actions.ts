@@ -24,7 +24,7 @@ export async function signUp(formData: FormData) {
   const { error } = await supabase.auth.signUp(parsed.data);
 
   if (error) {
-    return { error: error.message };
+    return { error: "アカウントの作成に失敗しました。しばらくしてからお試しください。" };
   }
 
   revalidatePath("/", "layout");

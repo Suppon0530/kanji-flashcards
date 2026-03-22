@@ -11,6 +11,9 @@ type GradeCheckboxesProps = {
   onToggle: (grade: number) => void;
   onSelectAll: () => void;
   onClearAll: () => void;
+  wordbookWordCount?: number;
+  wordbookSelected?: boolean;
+  onWordbookToggle?: () => void;
 };
 
 export function GradeCheckboxes({
@@ -19,9 +22,27 @@ export function GradeCheckboxes({
   onToggle,
   onSelectAll,
   onClearAll,
+  wordbookWordCount,
+  wordbookSelected,
+  onWordbookToggle,
 }: GradeCheckboxesProps) {
-  const allSelected = selectedGrades.size === GRADE_OPTIONS.length;
-  const noneSelected = selectedGrades.size === 0;
+  const showWordbook =
+    wordbookWordCount !== undefined && onWordbookToggle !== undefined;
+  const allSelected =
+    selectedGrades.size === GRADE_OPTIONS.length &&
+    (!showWordbook || wordbookSelected);
+  const noneSelected =
+    selectedGrades.size === 0 && (!showWordbook || !wordbookSelected);
+
+  const handleSelectAll = () => {
+    onSelectAll();
+    if (showWordbook && !wordbookSelected) onWordbookToggle();
+  };
+
+  const handleClearAll = () => {
+    onClearAll();
+    if (showWordbook && wordbookSelected) onWordbookToggle();
+  };
 
   return (
     <section>
@@ -32,7 +53,7 @@ export function GradeCheckboxes({
         <div className="flex gap-2">
           <button
             type="button"
-            onClick={onSelectAll}
+            onClick={handleSelectAll}
             disabled={allSelected}
             className="cursor-pointer text-xs text-primary transition-colors hover:text-primary-hover disabled:cursor-default disabled:text-zinc-300 dark:disabled:text-zinc-600"
           >
@@ -41,7 +62,7 @@ export function GradeCheckboxes({
           <span className="text-xs text-zinc-300 dark:text-zinc-600">|</span>
           <button
             type="button"
-            onClick={onClearAll}
+            onClick={handleClearAll}
             disabled={noneSelected}
             className="cursor-pointer text-xs text-primary transition-colors hover:text-primary-hover disabled:cursor-default disabled:text-zinc-300 dark:disabled:text-zinc-600"
           >
@@ -50,6 +71,20 @@ export function GradeCheckboxes({
         </div>
       </div>
       <div className="grid grid-cols-2 gap-3">
+        {showWordbook && (
+          <label className="col-span-2 flex cursor-pointer items-center gap-2 rounded-lg border border-zinc-200 px-3 py-2 transition-colors select-none hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800">
+            <input
+              type="checkbox"
+              checked={wordbookSelected ?? false}
+              onChange={onWordbookToggle}
+              className="grade-checkbox"
+            />
+            <span className="text-sm font-medium">マイカード</span>
+            <span className="ml-auto text-xs text-zinc-400">
+              {wordbookWordCount}語
+            </span>
+          </label>
+        )}
         {GRADE_OPTIONS.map((option) => (
           <label
             key={option.grade}

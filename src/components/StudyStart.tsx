@@ -9,6 +9,9 @@ type StudyStartProps = {
   onSelectAll: () => void;
   onClearAll: () => void;
   onStart: () => void;
+  wordbookWordCount?: number;
+  wordbookSelected?: boolean;
+  onWordbookToggle?: () => void;
 };
 
 export function StudyStart({
@@ -20,6 +23,9 @@ export function StudyStart({
   onSelectAll,
   onClearAll,
   onStart,
+  wordbookWordCount,
+  wordbookSelected,
+  onWordbookToggle,
 }: StudyStartProps) {
   return (
     <div className="flex flex-col items-center gap-6 text-center">
@@ -41,6 +47,9 @@ export function StudyStart({
             onToggle={onToggle}
             onSelectAll={onSelectAll}
             onClearAll={onClearAll}
+            wordbookWordCount={wordbookWordCount}
+            wordbookSelected={wordbookSelected}
+            onWordbookToggle={onWordbookToggle}
           />
         </div>
       )}
