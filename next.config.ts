@@ -2,6 +2,11 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   turbopack: {},
+  experimental: {
+    serverActions: {
+      allowedOrigins: ["zubokan.suppon.me"],
+    },
+  },
   webpack: (config, { dev }) => {
     if (dev) {
       config.watchOptions = {

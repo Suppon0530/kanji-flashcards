@@ -1,26 +1,122 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: "Noto Sans JP Variable", sans-serif;
+  --color-primary: #36B385;
+  --color-primary-hover: #2E9A73;
+  --color-incorrect: #B36236;
+  --color-incorrect-hover: #9A5430;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Card flip animation */
+.card-scene {
+  perspective: 800px;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+}
+
+.card-inner.flipped {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.card-back {
+  transform: rotateY(180deg);
+}
+
+/* Modal animations */
+.modal-fade-in {
+  animation: modal-fade-in 0.2s ease-out forwards;
+}
+
+.modal-fade-out {
+  animation: modal-fade-out 0.2s ease-in forwards;
+}
+
+.modal-slide-up {
+  animation: modal-slide-up 0.2s ease-out forwards;
+}
+
+.modal-slide-down {
+  animation: modal-slide-down 0.2s ease-in forwards;
+}
+
+@keyframes modal-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modal-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes modal-slide-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes modal-slide-down {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(16px); }
+}
+
+/* Grade checkbox */
+.grade-checkbox {
+  appearance: none;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid #d4d4d8;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.grade-checkbox:checked {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.grade-checkbox:checked::after {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 0px;
+  width: 5px;
+  height: 9px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* Drawer animations */
+.drawer-slide-in {
+  animation: drawer-slide-in 0.2s ease-out forwards;
+}
+
+.drawer-slide-out {
+  animation: drawer-slide-out 0.2s ease-in forwards;
+}
+
+@keyframes drawer-slide-in {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes drawer-slide-out {
+  from { transform: translateX(0); }
+  to { transform: translateX(100%); }
 }

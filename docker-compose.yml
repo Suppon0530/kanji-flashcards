@@ -6,6 +6,8 @@ services:
       - .:/home/node/kanji-flashcards
       - node_modules:/home/node/kanji-flashcards/node_modules
       - next_cache:/home/node/kanji-flashcards/.next
+    env_file:
+      - .env.local
     environment:
       - WATCHPACK_POLLING=true
     tty: true
