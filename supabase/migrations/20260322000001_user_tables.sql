@@ -53,9 +53,10 @@ CREATE POLICY "Users manage own wordbook entries" ON wordbook_entries
 -- サインアップ時にプロフィールを自動作成するトリガー
 CREATE OR REPLACE FUNCTION handle_new_user()
 RETURNS TRIGGER
-LANGUAGE plpgsql SECURITY DEFINER AS $$
+LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = '' AS $$
 BEGIN
-  INSERT INTO profiles (id, display_name)
+  INSERT INTO public.profiles (id, display_name)
   VALUES (NEW.id, COALESCE(NEW.raw_user_meta_data ->> 'display_name', ''));
   RETURN NEW;
 END;
