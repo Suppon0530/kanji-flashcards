@@ -13,10 +13,16 @@ const QUESTION_COUNT = 5;
 type FlashcardContainerProps = {
   words: KanjiWord[];
   showGradeSelection?: boolean;
+  wordbookWordIds?: number[];
   onClose?: () => void;
 };
 
-export function FlashcardContainer({ words, showGradeSelection = false, onClose }: FlashcardContainerProps) {
+export function FlashcardContainer({
+  words,
+  showGradeSelection = false,
+  wordbookWordIds,
+  onClose,
+}: FlashcardContainerProps) {
   const [state, setState] = useState<StudyState>(() => {
     if (showGradeSelection) {
       return { phase: "start" };
@@ -24,13 +30,28 @@ export function FlashcardContainer({ words, showGradeSelection = false, onClose 
     const questions = pickRandomWords(words, QUESTION_COUNT);
     return { phase: "card", currentIndex: 0, questions, answers: [] };
   });
+  const hasWordbook = !!wordbookWordIds;
   const [selectedGrades, setSelectedGrades] = useState<Set<number>>(
-    () => new Set(Object.keys(GRADE_LABELS).map(Number)),
+    () =>
+      hasWordbook
+        ? new Set()
+        : new Set(Object.keys(GRADE_LABELS).map(Number)),
+  );
+  const [wordbookSelected, setWordbookSelected] = useState(hasWordbook);
+
+  const wordbookIdSet = useMemo(
+    () => new Set(wordbookWordIds ?? []),
+    [wordbookWordIds],
   );
 
   const filteredWords = useMemo(
-    () => words.filter((w) => selectedGrades.has(w.grade)),
-    [words, selectedGrades],
+    () =>
+      words.filter(
+        (w) =>
+          selectedGrades.has(w.grade) ||
+          (wordbookSelected && wordbookIdSet.has(w.id)),
+      ),
+    [words, selectedGrades, wordbookSelected, wordbookIdSet],
   );
 
   const wordCountByGrade = useMemo(() => {
@@ -40,6 +61,12 @@ export function FlashcardContainer({ words, showGradeSelection = false, onClose 
     }
     return counts;
   }, [words]);
+
+  const wordbookWordCount = useMemo(() => {
+    if (!wordbookWordIds) return undefined;
+    const wordIdSet = new Set(words.map((w) => w.id));
+    return wordbookWordIds.filter((id) => wordIdSet.has(id)).length;
+  }, [words, wordbookWordIds]);
 
   const handleToggle = (grade: number) => {
     setSelectedGrades((prev) => {
@@ -70,11 +97,18 @@ export function FlashcardContainer({ words, showGradeSelection = false, onClose 
   const handleAnswer = (correct: boolean) => {
     if (state.phase !== "card") return;
 
-    const newAnswers = [...state.answers, { wordId: state.questions[state.currentIndex].id, correct }];
+    const newAnswers = [
+      ...state.answers,
+      { wordId: state.questions[state.currentIndex].id, correct },
+    ];
     const nextIndex = state.currentIndex + 1;
 
     if (nextIndex >= state.questions.length) {
-      setState({ phase: "result", questions: state.questions, answers: newAnswers });
+      setState({
+        phase: "result",
+        questions: state.questions,
+        answers: newAnswers,
+      });
     } else {
       setState({ ...state, currentIndex: nextIndex, answers: newAnswers });
     }
@@ -96,6 +130,9 @@ export function FlashcardContainer({ words, showGradeSelection = false, onClose 
           onSelectAll={handleSelectAll}
           onClearAll={handleClearAll}
           onStart={handleStart}
+          wordbookWordCount={wordbookWordCount}
+          wordbookSelected={wordbookSelected}
+          onWordbookToggle={() => setWordbookSelected((prev) => !prev)}
         />
       );
     case "card":

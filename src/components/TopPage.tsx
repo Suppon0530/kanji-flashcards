@@ -6,9 +6,10 @@ import { TopFooter } from "@/components/TopFooter";
 
 type TopPageProps = {
   words: KanjiWord[];
+  wordbookWordIds: number[] | null;
 };
 
-export function TopPage({ words }: TopPageProps) {
+export function TopPage({ words, wordbookWordIds }: TopPageProps) {
   return (
     <div className="flex min-h-dvh flex-col">
       <TopHeader />
@@ -16,7 +17,7 @@ export function TopPage({ words }: TopPageProps) {
       <main className="flex-1 px-4 py-8">
         <div className="mx-auto max-w-2xl space-y-8">
           <UpdateHistory />
-          <TopPageContent words={words} />
+          <TopPageContent words={words} wordbookWordIds={wordbookWordIds} />
         </div>
       </main>
 

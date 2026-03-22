@@ -3,29 +3,11 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod/v4";
 import { createClient } from "@/lib/supabase/server";
-import { wordbookArraySchema, wordbookDetailSchema } from "@/types/wordbook";
+import { wordbookEntriesSchema } from "@/types/wordbook";
 
-// --- 読み取り ---
+const wordIdsSchema = z.array(z.number().int().positive()).min(1);
 
-export async function getWordbooks() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) return [];
-
-  const { data, error } = await supabase
-    .from("wordbooks")
-    .select("id, name, created_at, wordbook_entries(count)")
-    .eq("user_id", user.id)
-    .order("created_at", { ascending: false });
-
-  if (error) throw error;
-  return wordbookArraySchema.parse(data);
-}
-
-export async function getWordbookDetail(wordbookId: string) {
+export async function getWordbookWordIds(): Promise<number[] | null> {
   const supabase = await createClient();
   const {
     data: { user },
@@ -34,79 +16,55 @@ export async function getWordbookDetail(wordbookId: string) {
   if (!user) return null;
 
   const { data, error } = await supabase
-    .from("wordbooks")
-    .select(
-      "id, name, wordbook_entries(id, kanji_word_id, note, kanji_words(id, question, reading, grade))",
-    )
-    .eq("id", wordbookId)
-    .single();
+    .from("user_wordbook_entries")
+    .select("kanji_word_id")
+    .eq("user_id", user.id);
 
-  if (error) return null;
-  return wordbookDetailSchema.parse(data);
+  if (error) return [];
+  return data.map((row: { kanji_word_id: number }) => row.kanji_word_id);
 }
 
-// --- 書き込み（RPC: 全操作1 API call） ---
-
-const saveSchema = z.object({
-  wordbookId: z.string().uuid().nullable(),
-  name: z.string().min(1),
-  wordIds: z.array(z.number().int().positive()).min(1),
-});
-
-export async function saveToWordbook(
-  wordbookId: string | null,
-  name: string,
-  wordIds: number[],
-) {
-  const parsed = saveSchema.safeParse({ wordbookId, name, wordIds });
-  if (!parsed.success) {
-    return { error: "入力内容が正しくありません。" };
-  }
-
+export async function getWordbookEntries() {
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (parsed.data.wordbookId) {
-    const { error } = await supabase.rpc("add_wordbook_entries", {
-      p_wordbook_id: parsed.data.wordbookId,
-      p_kanji_word_ids: parsed.data.wordIds,
-    });
-    if (error) return { error: error.message };
-  } else {
-    const { error } = await supabase.rpc("create_wordbook_with_entries", {
-      p_name: parsed.data.name,
-      p_kanji_word_ids: parsed.data.wordIds,
-    });
-    if (error) return { error: error.message };
-  }
+  if (!user) return [];
 
-  revalidatePath("/wordbook");
-  return { success: true };
+  const { data, error } = await supabase
+    .from("user_wordbook_entries")
+    .select("id, kanji_word_id, created_at, kanji_words(id, question, reading, grade)")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+  return wordbookEntriesSchema.parse(data);
 }
 
-export async function removeFromWordbook(
-  wordbookId: string,
-  wordIds: number[],
-) {
-  const supabase = await createClient();
+export async function addToWordbook(wordIds: number[]) {
+  const parsed = wordIdsSchema.safeParse(wordIds);
+  if (!parsed.success) return { error: "入力内容が正しくありません。" };
 
-  const { error } = await supabase.rpc("remove_wordbook_entries", {
-    p_wordbook_id: wordbookId,
-    p_kanji_word_ids: wordIds,
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("add_to_wordbook", {
+    p_kanji_word_ids: parsed.data,
   });
 
   if (error) return { error: error.message };
 
-  revalidatePath(`/wordbook/${wordbookId}`);
+  revalidatePath("/wordbook");
   return { success: true };
 }
 
-export async function deleteWordbook(wordbookId: string) {
-  const supabase = await createClient();
+export async function removeFromWordbook(wordIds: number[]) {
+  const parsed = wordIdsSchema.safeParse(wordIds);
+  if (!parsed.success) return { error: "入力内容が正しくありません。" };
 
-  const { error } = await supabase
-    .from("wordbooks")
-    .delete()
-    .eq("id", wordbookId);
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("remove_from_wordbook", {
+    p_kanji_word_ids: parsed.data,
+  });
 
   if (error) return { error: error.message };
 
@@ -114,15 +72,18 @@ export async function deleteWordbook(wordbookId: string) {
   return { success: true };
 }
 
-export async function renameWordbook(wordbookId: string, name: string) {
-  if (!name.trim()) return { error: "名前を入力してください。" };
-
+export async function clearWordbook() {
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return { error: "ログインしてください。" };
 
   const { error } = await supabase
-    .from("wordbooks")
-    .update({ name: name.trim(), updated_at: new Date().toISOString() })
-    .eq("id", wordbookId);
+    .from("user_wordbook_entries")
+    .delete()
+    .eq("user_id", user.id);
 
   if (error) return { error: error.message };
 

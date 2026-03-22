@@ -8,11 +8,20 @@ import { GradeCheckboxes } from "@/components/GradeCheckboxes";
 
 type TopPageContentProps = {
   words: KanjiWord[];
+  wordbookWordIds: number[] | null;
 };
 
-export function TopPageContent({ words }: TopPageContentProps) {
+export function TopPageContent({ words, wordbookWordIds }: TopPageContentProps) {
+  const isLoggedIn = wordbookWordIds !== null;
   const [selectedGrades, setSelectedGrades] = useState<Set<number>>(
-    () => new Set(Object.keys(GRADE_LABELS).map(Number)),
+    () =>
+      isLoggedIn ? new Set() : new Set(Object.keys(GRADE_LABELS).map(Number)),
+  );
+  const [wordbookSelected, setWordbookSelected] = useState(isLoggedIn);
+
+  const wordbookIdSet = useMemo(
+    () => new Set(wordbookWordIds ?? []),
+    [wordbookWordIds],
   );
 
   const handleToggle = (grade: number) => {
@@ -28,8 +37,13 @@ export function TopPageContent({ words }: TopPageContentProps) {
   };
 
   const filteredWords = useMemo(
-    () => words.filter((w) => selectedGrades.has(w.grade)),
-    [words, selectedGrades],
+    () =>
+      words.filter(
+        (w) =>
+          selectedGrades.has(w.grade) ||
+          (wordbookSelected && wordbookIdSet.has(w.id)),
+      ),
+    [words, selectedGrades, wordbookSelected, wordbookIdSet],
   );
 
   const wordCountByGrade = useMemo(() => {
@@ -57,7 +71,11 @@ export function TopPageContent({ words }: TopPageContentProps) {
 
       <div className="relative flex justify-center">
         <div className={filteredWords.length > 0 ? "visible" : "invisible"}>
-          <StudyModal words={filteredWords} autoOpen />
+          <StudyModal
+            words={filteredWords}
+            autoOpen
+            wordbookWordIds={wordbookWordIds ?? undefined}
+          />
         </div>
         {filteredWords.length === 0 && (
           <p className="absolute inset-0 flex items-center justify-center text-sm text-zinc-400">
@@ -74,6 +92,11 @@ export function TopPageContent({ words }: TopPageContentProps) {
           setSelectedGrades(new Set(Object.keys(GRADE_LABELS).map(Number)))
         }
         onClearAll={() => setSelectedGrades(new Set())}
+        wordbookWordCount={
+          wordbookWordIds !== null ? wordbookWordIds.length : undefined
+        }
+        wordbookSelected={wordbookSelected}
+        onWordbookToggle={() => setWordbookSelected((prev) => !prev)}
       />
     </div>
   );

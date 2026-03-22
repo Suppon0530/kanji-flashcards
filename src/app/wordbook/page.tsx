@@ -1,10 +1,10 @@
-import Link from "next/link";
 import { TopHeader } from "@/components/TopHeader";
 import { TopFooter } from "@/components/TopFooter";
-import { getWordbooks } from "@/server/actions/wordbook-actions";
+import { getWordbookEntries } from "@/server/actions/wordbook-actions";
+import { WordbookActions } from "@/components/WordbookActions";
 
-export default async function WordbookListPage() {
-  const wordbooks = await getWordbooks();
+export default async function WordbookPage() {
+  const entries = await getWordbookEntries();
 
   return (
     <div className="flex min-h-dvh flex-col">
@@ -12,28 +12,32 @@ export default async function WordbookListPage() {
 
       <main className="flex-1 px-4 py-8">
         <div className="mx-auto max-w-2xl">
-          <h1 className="mb-6 text-lg font-semibold">単語帳</h1>
+          <h1 className="mb-6 text-lg font-semibold">
+            マイカード（{entries.length}語）
+          </h1>
 
-          {wordbooks.length === 0 ? (
+          {entries.length > 0 && <WordbookActions entries={entries} />}
+
+          {entries.length === 0 ? (
             <p className="py-8 text-center text-zinc-400">
-              単語帳がありません。学習結果から単語を保存できます。
+              マイカードにはまだ単語がありません。
+              <br />
+              学習結果からチェックして登録できます。
             </p>
           ) : (
             <div className="space-y-3">
-              {wordbooks.map((wb) => (
-                <Link
-                  key={wb.id}
-                  href={`/wordbook/${wb.id}`}
-                  className="flex items-center justify-between rounded-xl border border-zinc-200 p-4 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-900"
+              {entries.map((entry) => (
+                <div
+                  key={entry.id}
+                  className="flex flex-col rounded-xl border border-zinc-200 p-4 dark:border-zinc-700"
                 >
-                  <div>
-                    <span className="font-medium">{wb.name}</span>
-                    <span className="ml-2 text-sm text-zinc-400">
-                      {wb.wordbook_entries[0]?.count ?? 0}語
-                    </span>
-                  </div>
-                  <span className="text-zinc-400">→</span>
-                </Link>
+                  <span className="text-2xl font-bold">
+                    {entry.kanji_words.question}
+                  </span>
+                  <span className="text-sm font-medium text-zinc-500">
+                    {entry.kanji_words.reading}
+                  </span>
+                </div>
               ))}
             </div>
           )}

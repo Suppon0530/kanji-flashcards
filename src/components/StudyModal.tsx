@@ -7,9 +7,10 @@ import { FlashcardContainer } from "@/components/FlashcardContainer";
 type StudyModalProps = {
   words: KanjiWord[];
   autoOpen?: boolean;
+  wordbookWordIds?: number[];
 };
 
-export function StudyModal({ words, autoOpen = false }: StudyModalProps) {
+export function StudyModal({ words, autoOpen = false, wordbookWordIds }: StudyModalProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [modalKey, setModalKey] = useState(0);
@@ -96,6 +97,7 @@ export function StudyModal({ words, autoOpen = false }: StudyModalProps) {
                 key={modalKey}
                 words={words}
                 showGradeSelection={showGradeSelection}
+                wordbookWordIds={wordbookWordIds}
                 onClose={handleClose}
               />
             </div>
