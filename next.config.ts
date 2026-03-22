@@ -4,7 +4,7 @@ const nextConfig: NextConfig = {
   turbopack: {},
   experimental: {
     serverActions: {
-      allowedOrigins: ["kanji-flashcards.suppon.me"],
+      allowedOrigins: ["zubokan.suppon.me"],
     },
   },
   webpack: (config, { dev }) => {
