@@ -1,5 +1,6 @@
 import type { KanjiWord, StudyAnswer } from "@/types/kanji";
 import { calculateScore } from "@/lib/flashcard-utils";
+import { SaveToWordbook } from "@/components/SaveToWordbook";
 
 type StudyResultProps = {
   questions: KanjiWord[];
@@ -10,6 +11,9 @@ type StudyResultProps = {
 
 export function StudyResult({ questions, answers, onRestart, onClose }: StudyResultProps) {
   const { correct, total, percentage } = calculateScore(answers);
+  const incorrectWordIds = questions
+    .filter((_, i) => !answers[i]?.correct)
+    .map((w) => w.id);
 
   return (
     <div className="flex w-full flex-col items-center gap-6">
@@ -48,6 +52,10 @@ export function StudyResult({ questions, answers, onRestart, onClose }: StudyRes
             </div>
           );
         })}
+      </div>
+
+      <div className="w-full max-w-sm">
+        <SaveToWordbook wordIds={incorrectWordIds} />
       </div>
 
       <div className="flex gap-4">

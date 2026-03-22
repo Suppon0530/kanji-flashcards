@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { AuthButton } from "@/components/AuthButton";
 import { HamburgerMenu } from "@/components/HamburgerMenu";
 
 export function TopHeader() {
@@ -19,16 +20,19 @@ export function TopHeader() {
           unoptimized
         />
 
-        <button
-          onClick={() => setIsMenuOpen(true)}
-          aria-label="メニューを開く"
-          aria-expanded={isMenuOpen}
-          className="flex cursor-pointer flex-col gap-1.5 p-2"
-        >
-          <span className="block h-0.5 w-6 bg-zinc-700 dark:bg-zinc-300" />
-          <span className="block h-0.5 w-6 bg-zinc-700 dark:bg-zinc-300" />
-          <span className="block h-0.5 w-6 bg-zinc-700 dark:bg-zinc-300" />
-        </button>
+        <div className="flex items-center gap-3">
+          <AuthButton />
+          <button
+            onClick={() => setIsMenuOpen(true)}
+            aria-label="メニューを開く"
+            aria-expanded={isMenuOpen}
+            className="flex cursor-pointer flex-col gap-1.5 p-2"
+          >
+            <span className="block h-0.5 w-6 bg-zinc-700 dark:bg-zinc-300" />
+            <span className="block h-0.5 w-6 bg-zinc-700 dark:bg-zinc-300" />
+            <span className="block h-0.5 w-6 bg-zinc-700 dark:bg-zinc-300" />
+          </button>
+        </div>
       </div>
 
       {isMenuOpen && <HamburgerMenu onClose={() => setIsMenuOpen(false)} />}
