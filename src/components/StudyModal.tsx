@@ -10,10 +10,27 @@ type StudyModalProps = {
 };
 
 export function StudyModal({ words, autoOpen = false }: StudyModalProps) {
-  const [isModalOpen, setIsModalOpen] = useState(autoOpen);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [modalKey, setModalKey] = useState(0);
-  const [showGradeSelection, setShowGradeSelection] = useState(autoOpen);
+  const [showGradeSelection, setShowGradeSelection] = useState(false);
+
+  useEffect(() => {
+    if (!autoOpen) return;
+
+    const STORAGE_KEY = "zubokan-last-modal-date";
+    const today = new Date().toISOString().slice(0, 10);
+
+    try {
+      if (localStorage.getItem(STORAGE_KEY) !== today) {
+        setIsModalOpen(true);
+        setShowGradeSelection(true);
+        localStorage.setItem(STORAGE_KEY, today);
+      }
+    } catch {
+      // localStorage が使えない場合は autoOpen しない
+    }
+  }, [autoOpen]);
 
   const handleOpen = () => {
     setModalKey((prev) => prev + 1);
