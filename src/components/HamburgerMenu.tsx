@@ -6,6 +6,7 @@ import { GRADE_LABELS } from "@/lib/constants";
 
 const MENU_ITEMS = [
   { href: "/", label: "トップ" },
+  { href: "/wordbook", label: "単語帳" },
   ...Object.entries(GRADE_LABELS)
     .filter(([, label], i, arr) => i === 0 || arr[i - 1][1] !== label)
     .map(([grade, label]) => ({ href: `/grade/${grade}`, label })),
