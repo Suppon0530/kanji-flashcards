@@ -11,11 +11,13 @@ type TopPageContentProps = {
   wordbookWordIds: number[] | null;
 };
 
-export function TopPageContent({ words, wordbookWordIds }: TopPageContentProps) {
+export function TopPageContent({
+  words,
+  wordbookWordIds,
+}: TopPageContentProps) {
   const isLoggedIn = wordbookWordIds !== null;
-  const [selectedGrades, setSelectedGrades] = useState<Set<number>>(
-    () =>
-      isLoggedIn ? new Set() : new Set(Object.keys(GRADE_LABELS).map(Number)),
+  const [selectedGrades, setSelectedGrades] = useState<Set<number>>(() =>
+    isLoggedIn ? new Set() : new Set(Object.keys(GRADE_LABELS).map(Number)),
   );
   const [wordbookSelected, setWordbookSelected] = useState(isLoggedIn);
 
@@ -64,6 +66,10 @@ export function TopPageContent({ words, wordbookWordIds }: TopPageContentProps) 
             {filteredWords.length}
           </span>
           語
+          <br />
+          <span className="font-bold text-primary">
+            こちらはプロトタイプになります。
+          </span>
           <br />
           ランダムに5問出題します。カードをめくって、読みを確認しましょう。
         </p>
