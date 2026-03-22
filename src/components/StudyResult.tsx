@@ -1,17 +1,17 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import type { KanjiWord, StudyAnswer } from "@/types/kanji";
 import { calculateScore } from "@/lib/flashcard-utils";
 import {
   addToWordbook,
   removeFromWordbook,
-  getWordbookWordIds,
 } from "@/server/actions/wordbook-actions";
 
 type StudyResultProps = {
   questions: KanjiWord[];
   answers: StudyAnswer[];
+  wordbookWordIds?: number[];
   onRestart: () => void;
   onClose?: () => void;
 };
@@ -19,42 +19,31 @@ type StudyResultProps = {
 export function StudyResult({
   questions,
   answers,
+  wordbookWordIds,
   onRestart,
   onClose,
 }: StudyResultProps) {
   const { correct, total, percentage } = calculateScore(answers);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [originalWordbookIds, setOriginalWordbookIds] = useState<Set<number>>(
-    new Set(),
-  );
-  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
-  const [ready, setReady] = useState(false);
+  const isLoggedIn = wordbookWordIds !== undefined;
 
-  useEffect(() => {
-    getWordbookWordIds().then((ids) => {
-      if (ids === null) {
-        setReady(true);
-        return;
-      }
-      setIsLoggedIn(true);
+  const [originalWordbookIds] = useState<Set<number>>(() => {
+    if (!wordbookWordIds) return new Set<number>();
+    const questionIdSet = new Set(questions.map((q) => q.id));
+    return new Set(wordbookWordIds.filter((id) => questionIdSet.has(id)));
+  });
 
-      const wordbookSet = new Set(ids);
-      setOriginalWordbookIds(wordbookSet);
-
-      const questionIdSet = new Set(questions.map((q) => q.id));
-      const initial = new Set<number>();
-
-      for (const id of wordbookSet) {
-        if (questionIdSet.has(id)) initial.add(id);
-      }
-      questions.forEach((q, i) => {
-        if (!answers[i]?.correct) initial.add(q.id);
-      });
-
-      setSelectedIds(initial);
-      setReady(true);
+  const [selectedIds, setSelectedIds] = useState<Set<number>>(() => {
+    if (!wordbookWordIds) return new Set<number>();
+    const questionIdSet = new Set(questions.map((q) => q.id));
+    const initial = new Set<number>();
+    for (const id of wordbookWordIds) {
+      if (questionIdSet.has(id)) initial.add(id);
+    }
+    questions.forEach((q, i) => {
+      if (!answers[i]?.correct) initial.add(q.id);
     });
-  }, [questions, answers]);
+    return initial;
+  });
 
   const toggleWord = (id: number) => {
     setSelectedIds((prev) => {
@@ -66,14 +55,12 @@ export function StudyResult({
   };
 
   const handleSaveAndAction = (action: () => void) => {
-    if (isLoggedIn && ready) {
-      const questionIdSet = new Set(questions.map((q) => q.id));
-
+    if (isLoggedIn) {
       const toAdd = Array.from(selectedIds).filter(
         (id) => !originalWordbookIds.has(id),
       );
       const toRemove = Array.from(originalWordbookIds).filter(
-        (id) => questionIdSet.has(id) && !selectedIds.has(id),
+        (id) => !selectedIds.has(id),
       );
 
       if (toAdd.length > 0) addToWordbook(toAdd);

@@ -1,8 +1,23 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useSyncExternalStore } from "react";
 import type { KanjiWord } from "@/types/kanji";
 import { FlashcardContainer } from "@/components/FlashcardContainer";
+
+const STORAGE_KEY = "zubokan-last-modal-date";
+const emptySubscribe = () => () => {};
+
+function getAutoOpenSnapshot(autoOpen: boolean): boolean {
+  if (!autoOpen) return false;
+  try {
+    return (
+      localStorage.getItem(STORAGE_KEY) !==
+      new Date().toISOString().slice(0, 10)
+    );
+  } catch {
+    return false;
+  }
+}
 
 type StudyModalProps = {
   words: KanjiWord[];
@@ -11,27 +26,35 @@ type StudyModalProps = {
 };
 
 export function StudyModal({ words, autoOpen = false, wordbookWordIds }: StudyModalProps) {
+  const shouldAutoOpen = useSyncExternalStore(
+    emptySubscribe,
+    () => getAutoOpenSnapshot(autoOpen),
+    () => false,
+  );
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [modalKey, setModalKey] = useState(0);
   const [showGradeSelection, setShowGradeSelection] = useState(false);
 
+  // React公式パターン: 外部ストアの値に基づいてレンダリング中にstateを調整
+  const [autoOpenHandled, setAutoOpenHandled] = useState(false);
+  if (shouldAutoOpen && !autoOpenHandled) {
+    setAutoOpenHandled(true);
+    setIsModalOpen(true);
+    setShowGradeSelection(true);
+  }
+
+  // localStorage への書き込み（副作用のためeffect内で実行、setState なし）
   useEffect(() => {
-    if (!autoOpen) return;
-
-    const STORAGE_KEY = "zubokan-last-modal-date";
-    const today = new Date().toISOString().slice(0, 10);
-
-    try {
-      if (localStorage.getItem(STORAGE_KEY) !== today) {
-        setIsModalOpen(true);
-        setShowGradeSelection(true);
-        localStorage.setItem(STORAGE_KEY, today);
+    if (autoOpenHandled) {
+      try {
+        localStorage.setItem(STORAGE_KEY, new Date().toISOString().slice(0, 10));
+      } catch {
+        // localStorage が使えない場合は無視
       }
-    } catch {
-      // localStorage が使えない場合は autoOpen しない
     }
-  }, [autoOpen]);
+  }, [autoOpenHandled]);
 
   const handleOpen = () => {
     setModalKey((prev) => prev + 1);

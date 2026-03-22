@@ -150,6 +150,7 @@ export function FlashcardContainer({
         <StudyResult
           questions={state.questions}
           answers={state.answers}
+          wordbookWordIds={wordbookWordIds}
           onRestart={handleRestart}
           onClose={onClose}
         />
