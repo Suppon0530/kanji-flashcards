@@ -16,10 +16,13 @@ export function TopPageContent({
   wordbookWordIds,
 }: TopPageContentProps) {
   const isLoggedIn = wordbookWordIds !== null;
+  const hasWordbookWords = isLoggedIn && wordbookWordIds.length > 0;
   const [selectedGrades, setSelectedGrades] = useState<Set<number>>(() =>
-    isLoggedIn ? new Set() : new Set(Object.keys(GRADE_LABELS).map(Number)),
+    hasWordbookWords
+      ? new Set()
+      : new Set(Object.keys(GRADE_LABELS).map(Number)),
   );
-  const [wordbookSelected, setWordbookSelected] = useState(isLoggedIn);
+  const [wordbookSelected, setWordbookSelected] = useState(hasWordbookWords);
 
   const wordbookIdSet = useMemo(
     () => new Set(wordbookWordIds ?? []),
