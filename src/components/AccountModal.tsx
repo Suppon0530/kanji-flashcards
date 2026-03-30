@@ -32,8 +32,6 @@ export function AccountModal({ isOpen, onClose, user, loading, onAuthChange }: A
     username: string;
     email: string | null;
   } | null>(null);
-  const [profileLoading, setProfileLoading] = useState(false);
-
   // ログインフォーム
   const [loginState, loginAction, loginPending] = useActionState(
     async (_prev: AuthFormState, formData: FormData) => {
@@ -73,15 +71,18 @@ export function AccountModal({ isOpen, onClose, user, loading, onAuthChange }: A
   // プロフィール取得
   useEffect(() => {
     if (isOpen && user) {
-      setProfileLoading(true);
       getProfile().then((data) => {
-        if (data) {
-          setProfile({ username: data.username, email: data.email });
-        }
-        setProfileLoading(false);
+        setProfile(
+          data
+            ? { username: data.username, email: data.email }
+            : { username: "", email: null },
+        );
       });
     }
   }, [isOpen, user]);
+
+  // プロフィールローディング状態（stateではなく導出）
+  const profileLoading = isOpen && !!user && !profile;
 
   // スクロールロック
   useEffect(() => {

@@ -11,6 +11,13 @@ export function AccountIconButton() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalKey, setModalKey] = useState(0);
 
+  // サーバー側の認証変更後にクライアント側の状態を同期する
+  const refreshAuth = useCallback(async () => {
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    setUser(user);
+  }, []);
+
   useEffect(() => {
     const supabase = createClient();
 
@@ -25,15 +32,17 @@ export function AccountIconButton() {
       setUser(session?.user ?? null);
     });
 
-    return () => subscription.unsubscribe();
-  }, []);
+    // 他コンポーネント（StudyResult等）からの認証変更通知を受け取る
+    const handleAuthRefresh = () => {
+      refreshAuth();
+    };
+    window.addEventListener("auth-state-refresh", handleAuthRefresh);
 
-  // サーバー側の認証変更後にクライアント側の状態を同期する
-  const refreshAuth = useCallback(async () => {
-    const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    setUser(user);
-  }, []);
+    return () => {
+      subscription.unsubscribe();
+      window.removeEventListener("auth-state-refresh", handleAuthRefresh);
+    };
+  }, [refreshAuth]);
 
   return (
     <>

@@ -6,7 +6,7 @@ import { signUp } from "@/server/actions/auth-actions";
 
 export default function SignUpPage() {
   const [state, formAction, pending] = useActionState(
-    async (_prev: { error: string } | null, formData: FormData) => {
+    async (_prev: { error: string | undefined } | null, formData: FormData) => {
       const result = await signUp(formData);
       // signUp は成功時に redirect するため、ここに来るのはエラー時のみ
       return result ?? null;
