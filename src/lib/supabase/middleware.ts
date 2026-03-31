@@ -31,7 +31,11 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   // 未認証ユーザーを保護ルートからリダイレクト
-  if (!user && request.nextUrl.pathname.startsWith("/wordbook")) {
+  if (
+    !user &&
+    (request.nextUrl.pathname.startsWith("/wordbook") ||
+      request.nextUrl.pathname.startsWith("/settings"))
+  ) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     return NextResponse.redirect(url);

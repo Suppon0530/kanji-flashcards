@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { AuthButton } from "@/components/AuthButton";
+import { AccountIconButton } from "@/components/AccountIconButton";
 import { HamburgerMenu } from "@/components/HamburgerMenu";
 
 export function TopHeader() {
@@ -21,7 +21,7 @@ export function TopHeader() {
         />
 
         <div className="flex items-center gap-3">
-          <AuthButton />
+          <AccountIconButton />
           <button
             onClick={() => setIsMenuOpen(true)}
             aria-label="メニューを開く"

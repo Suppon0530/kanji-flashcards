@@ -11,7 +11,8 @@
   - 学習結果から単語を登録 / 解除
   - 学年ページからチェックで登録 / 解除
   - マイカードを出題範囲として選択可能
-- メールアドレス + パスワードによるユーザー認証
+- ユーザー名 + パスワードによるユーザー認証
+- メールアドレスは任意で後から登録可能
 
 ## Tech Stack
 
@@ -96,11 +97,61 @@ supabase/
 - **学年ページ**: チェックボックス操作は 500ms のデバウンスでバッチ処理し、差分のみ送信
 - **認証状態**: `@supabase/ssr` の Middleware で JWT を自動更新
 
-### DB テーブル構成
+### DB 設計
 
-| テーブル | 用途 | RLS |
-|---------|------|-----|
-| `kanji` | 常用漢字マスター | 全員 SELECT 可 |
-| `kanji_words` | 問題データ | 全員 SELECT 可 |
-| `profiles` | ユーザープロフィール | 自分のみ参照・更新 |
-| `user_wordbook_entries` | マイカード | 自分のみ全操作 |
+#### テーブル
+
+```
+kanji                          kanji_words
+┌──────────────────────┐       ┌──────────────────────────┐
+│ id          SERIAL PK│◄──┐   │ id          SERIAL PK    │
+│ character   CHAR(1)  │   │   │ question    VARCHAR(20)  │
+│ grade       INTEGER  │   ├───│ kanji_id_1  INTEGER FK   │
+│ kanjipedia_url TEXT?  │   ├───│ kanji_id_2  INTEGER FK?  │
+└──────────────────────┘   ├───│ kanji_id_3  INTEGER FK?  │
+                           └───│ kanji_id_4  INTEGER FK?  │
+                               │ grade       INTEGER      │
+auth.users                     └─────────────┬────────────┘
+┌──────────────┐                             │
+│ id    UUID PK│◄──┐                         │
+│ email TEXT   │   │   profiles               │
+│ ...          │   │   ┌──────────────────┐   │
+└──────────────┘   ├───│ id       UUID PK │   │
+                   │   │ username TEXT UQ  │   │
+                   │   │ display_name TEXT │   │
+                   │   │ created_at TSTZ  │   │
+                   │   └──────────────────┘   │
+                   │                          │
+                   │   user_wordbook_entries   │
+                   │   ┌──────────────────────┐│
+                   └───│ user_id    UUID FK   ││
+                       │ kanji_word_id INT FK │┘
+                       │ id         UUID PK   │
+                       │ created_at TSTZ      │
+                       │ UQ(user_id,          │
+                       │    kanji_word_id)    │
+                       └──────────────────────┘
+```
+
+#### RLS ポリシー
+
+| テーブル | 操作 | ポリシー |
+|---------|------|---------|
+| `kanji` | SELECT | 全員許可 |
+| `kanji_words` | SELECT | 全員許可 |
+| `profiles` | SELECT / UPDATE | `auth.uid() = id` |
+| `user_wordbook_entries` | ALL | `auth.uid() = user_id` |
+
+#### RPC 関数
+
+| 関数 | 用途 | 実行権限 |
+|------|------|---------|
+| `handle_new_user()` | サインアップ時にプロフィール自動作成（トリガー） | SECURITY DEFINER |
+| `check_username_available(p_username)` | ユーザー名の重複チェック | anon / authenticated |
+| `get_email_by_username(p_username)` | ユーザー名から auth.users.email を取得（ログイン用） | anon / authenticated |
+| `add_to_wordbook(p_kanji_word_ids)` | マイカードへの一括追加 | authenticated |
+| `remove_from_wordbook(p_kanji_word_ids)` | マイカードからの一括削除 | authenticated |
+
+#### 認証方式
+
+Supabase Auth はメールアドレスが必須のため、サインアップ時にプレースホルダーメール `{username}@zubokan.noreply` を内部生成する。ユーザーにはメールアドレスの存在を意識させず、ユーザー名 + パスワードで認証する。メールアドレスは設定ページから任意で登録可能。

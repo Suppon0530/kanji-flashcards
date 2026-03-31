@@ -1,9 +1,14 @@
 -- ユーザープロフィール（auth.usersから自動作成）
 CREATE TABLE profiles (
   id           UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  username     TEXT NOT NULL,
   display_name TEXT NOT NULL,
-  created_at   TIMESTAMPTZ NOT NULL DEFAULT now()
+  created_at   TIMESTAMPTZ NOT NULL DEFAULT now(),
+  CONSTRAINT chk_username_format CHECK (username ~ '^[a-zA-Z0-9][a-zA-Z0-9_-]{2,19}$')
 );
+
+-- ユーザー名ユニークインデックス（大文字小文字を区別しない）
+CREATE UNIQUE INDEX idx_profiles_username_lower ON profiles (LOWER(username));
 
 -- マイカード（1ユーザ1単語帳）
 CREATE TABLE user_wordbook_entries (
@@ -37,15 +42,66 @@ RETURNS TRIGGER
 LANGUAGE plpgsql SECURITY DEFINER
 SET search_path = '' AS $$
 BEGIN
-  INSERT INTO public.profiles (id, display_name)
-  VALUES (NEW.id, COALESCE(NEW.raw_user_meta_data ->> 'display_name', ''));
+  INSERT INTO public.profiles (id, username, display_name)
+  VALUES (
+    NEW.id,
+    COALESCE(NEW.raw_user_meta_data ->> 'username', ''),
+    COALESCE(NEW.raw_user_meta_data ->> 'display_name', NEW.raw_user_meta_data ->> 'username', '')
+  );
   RETURN NEW;
 END;
 $$;
 
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION handle_new_user();
+
+-- RPC: ユーザー名からメールアドレスを取得（ログイン時に使用）
+CREATE OR REPLACE FUNCTION get_email_by_username(p_username TEXT)
+RETURNS TEXT
+LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = '' AS $$
+DECLARE
+  v_user_id UUID;
+  v_email TEXT;
+BEGIN
+  SELECT id INTO v_user_id
+  FROM public.profiles
+  WHERE LOWER(username) = LOWER(p_username);
+
+  IF v_user_id IS NULL THEN
+    RETURN NULL;
+  END IF;
+
+  SELECT email INTO v_email
+  FROM auth.users
+  WHERE id = v_user_id;
+
+  RETURN v_email;
+END;
+$$;
+
+REVOKE EXECUTE ON FUNCTION get_email_by_username(TEXT) FROM public;
+GRANT EXECUTE ON FUNCTION get_email_by_username(TEXT) TO anon;
+GRANT EXECUTE ON FUNCTION get_email_by_username(TEXT) TO authenticated;
+
+-- RPC: ユーザー名の重複チェック
+CREATE OR REPLACE FUNCTION check_username_available(p_username TEXT)
+RETURNS BOOLEAN
+LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = '' AS $$
+BEGIN
+  RETURN NOT EXISTS (
+    SELECT 1 FROM public.profiles
+    WHERE LOWER(username) = LOWER(p_username)
+  );
+END;
+$$;
+
+REVOKE EXECUTE ON FUNCTION check_username_available(TEXT) FROM public;
+GRANT EXECUTE ON FUNCTION check_username_available(TEXT) TO anon;
+GRANT EXECUTE ON FUNCTION check_username_available(TEXT) TO authenticated;
 
 -- RPC: マイカードへの一括追加
 CREATE OR REPLACE FUNCTION add_to_wordbook(p_kanji_word_ids INTEGER[])
